@@ -361,9 +361,13 @@ def check_ship(board, ship, attack_r, attack_c):
             # Remove that ship from the list and return true.   
             if counter == number:
                 
+                sunk = number
+
                 ship.pop(i)
                 
-                return True
+                return [True, sunk]
+            
+        
             
           
             
@@ -590,7 +594,7 @@ while True:
         attack_c = input("Which column do you want to attack: ")
 
         # Checks user input to see if number.
-        if attack_r.isdigit() or attack_c.isdigit() == True:
+        if attack_r.isdigit() and attack_c.isdigit() == True:
             break
         else:
             print("\nPlease input a correct placement.\n")
@@ -606,15 +610,32 @@ while True:
     
     # Checks the blank board to see if it has the select number of hits.
     # If the hit markers == ship markers then run code.
-    if check_ship(blank_board, comp_ship_storage, attack_r, attack_c) == True:
-         
-        print("SHIP SUNK\n")
-        
-        comp_ships = comp_ships + 1
+    sunk_ship = check_ship(blank_board, comp_ship_storage, attack_r, attack_c)
+
+
+    try:
+        if sunk_ship[0] == True:
+
+            ship = ""
+
+            if sunk_ship[1] == 5:
+                print("Aircraft Carrier has been sunk!\n")
+            elif sunk_ship[1] == 4:
+                print("Battleship has been sunk!\n")
+            elif sunk_ship[1] == 3:
+                print("Cruiser has been sunk!\n")
+            elif sunk_ship[1] == 2:
+                print("Destroyer has been sunk!\n")
+
+            
+            comp_ships = comp_ships + 1
+
+    except TypeError:
+        pass
         
         # If 5 ships have been sunk then end the loop.
-        if comp_ships == 5:
-            break
+    if comp_ships == 5:
+        break
     
     # Displays updated board.
     display_board(blank_board)
@@ -640,15 +661,33 @@ while True:
         display_board(player)
         
         # This will check the players ships hit markers.
-        if check_ship(player, player_ship_storage, comp_move[1], comp_move[2]) == True:
-         
-            print("SHIP SUNK\n")
+        sunk_ship = check_ship(player, player_ship_storage, comp_move[1], comp_move[2])
+
+        try:
+            if sunk_ship[0] == True:
+
+                ship = ""
+
+                if sunk_ship[1] == 5:
+                    print("Aircraft Carrier has been sunk!")
+                elif sunk_ship[1] == 4:
+                    print("Battleship has been sunk!")
+                elif sunk_ship[1] == 3:
+                    print("Cruiser has been sunk!")
+                elif sunk_ship[1] == 2:
+                    print("Destroyer has been sunk!")
+            
+            
+            
+                player_ships = player_ships + 1
+
+        except TypeError:
+            pass
+            
+        if player_ships == 5:
+            break
         
-            player_ships = player_ships + 1
-        
-            if player_ships == 5:
-                break
-        
+
         # This will allow the computer to go again,
         # when a ship has been hit.
         while comp_move[3] == False:
@@ -657,15 +696,31 @@ while True:
             
             display_board(player)
             
+            sunk_ship = check_ship(player, player_ship_storage, comp_move[1], comp_move[2])
+
+            try:
+
+                if sunk_ship[0] == True:
+
+                    ship = ""
+
+                    if sunk_ship[1] == 5:
+                        print("Aircraft Carrier has been sunk!")
+                    elif sunk_ship[1] == 4:
+                        print("Battleship has been sunk!")
+                    elif sunk_ship[1] == 3:
+                        print("Cruiser has been sunk!")
+                    elif sunk_ship[1] == 2:
+                        print("Destroyer has been sunk!")
             
-            if check_ship(player, player_ship_storage, comp_move[1], comp_move[2]) == True:
-         
-                print("SHIP SUNK\n")
+            
+                    player_ships = player_ships + 1
+
+            except TypeError:
+                pass
         
-                player_ships = player_ships + 1
-        
-                if player_ships == 5:
-                    break
+            if player_ships == 5:
+                break
         
         #display_board(player)
         input("Press enter to continue.")
