@@ -250,38 +250,176 @@ def attack(board, blank, attack_r, attack_c):
         
         
 # This will allow the computer to attack.       
-def comp_attack(board):
+def comp_attack(board, ship):
     '''This will select two random numbers for row and column.
     It will then check that to see if it has hit or missed.
     if a row and column has already been hit it will then try again.'''
     
-    
-    while True:
-        
 
-        attack_r = random.randint(1,10)
-        attack_c = random.randint(1,10)
-        
-        
+    while True:
+
+        placed = False
+
         hit = True
+
+
+        for i, boat in enumerate(ship):
+            
+
+            boat_count = 0
+
+            for mark in boat:
+
+                row = mark[0]
+                col = mark[1]
+
+                if board[row][col] == "X":
+
+                    boat_count = boat_count + 1
+
+
+                if boat_count == len(boat):
+
+                        ship.pop(i)
+
+
+
+
+            for mark in boat:
+
+                moves = ["up", "down", "left", "right"]
+
+                row = mark[0]
+                col = mark[1]
+
+                if board[row][col] == "X":
+
+
+                    while True:
+
+                        move = random.choice(moves)
+
+                        
+                        if move == "down":
+                            
+            
+                            if row + 1 < 11:
+
+                                pos = board[row + 1][col]
+
+                                if pos == "~" or pos == "0":
+
+                                    attack_r = row + 1 
+                                    attack_c = col
+
+                                    placed = True
+                                    
+                                    break
+
+                            
+
+
+
+                                
+
+                        if move == "up":
+                            if row - 1 > 0:
+                                
+                                pos = board[row-1][col]
+
+                                if pos == "~" or pos == "0":
+
+                                    attack_r = row - 1 
+                                    attack_c = col
+
+                                    placed = True
+                                    break
+                            
+
+                        if move == "right":
+                            if col + 1 < 11:
+                                
+                                pos = board[row][col + 1]
+
+                                if pos == "~" or pos == "0":
+
+                                    attack_r = row 
+                                    attack_c = col + 1
+
+                                    placed = True
+                                    break
+                                
+
+                        if move == "left":
+                            if col - 1 > 0:
+                                
+                                pos = board[row][col - 1]
+
+                                if pos == "~" or pos == "0":
+
+                                    attack_r = row
+                                    attack_c = col - 1
+
+                                    placed = True
+                                    break
+                        
+
+
+
+                        if len(moves) == 1:
+                            break
+
+
+                        moves.remove(move)
+
+                    
+
+                if placed == True:
+                    break
+                
+
+
+
+
+     
+        if placed == False:
+
+            attack_r = random.randint(1,10)
+            attack_c = random.randint(1,10)
+
+
+
         
         if board[attack_r][attack_c] == "0":
             board[attack_r][attack_c] = "X"
             print("\nYou've been HIT!!!!\n")
+
             hit = False
             break
             
         elif board[attack_r][attack_c] == "X":
             error = "Invalid" 
+
             
         elif board[attack_r][attack_c] == "_":
             error = "Invalid"
+
+            
         
         else:
             board[attack_r][attack_c] = "_"
             print("\nTHEY MISSED!!!!\n")
             break
         
+
+
+
+
+        
+
+
+
+
     ''' This will return the players board,
     which has been edited with the new markers.'''
     return [board, attack_r, attack_c, hit]  
@@ -293,37 +431,37 @@ def check_ship(board, ship, attack_r, attack_c):
     if each ship has been hit the correct number of times.
     Once a ships has been hit the correct number of times,
     it will be removed from the list.'''
+        
+        
+    # Runs through the ship list.
+    for i in range(len(ship)):
+        
+        # i will select what ship its looking at.
+        # 1 and 2 are the indexes of row and column.
+        row = ship[i][1]
+        col = ship[i][2]
+        
+        direction = ship[i][3]
+        
+        number = ship[i][0]
+        
+        # This allows me to see which ship has been sunk.
+        counter = 0
+        
 
-    # Checks if the attack hits a ship.    
-    if board[attack_r][attack_c] == "X":
-        
-        
-        # Runs through the ship list.
-        for i in range(len(ship)):
-            
-            # i will select what ship its looking at.
-            # 1 and 2 are the indexes of row and column.
-            row = ship[i][1]
-            col = ship[i][2]
-            
-            direction = ship[i][3]
-            
-            number = ship[i][0]
-            
-            # This allows me to see which ship has been sunk.
-            counter = 0
-            
+        if board[attack_r][attack_c] == "X":
             # When it looks at the first ship, 
             # iterate over it the number of markers it has.
             for k in range(number):
                 
+
                 # Check the direction to determine which way it has to look.
                 
                 if direction == "up":
-                    
+
                     # If up then iterate over row minus the number.
                     if board[row-k][col] == "X":
-                        
+
                         # If it finds an X add one to the counter and go again.
                         counter = counter + 1
                         
@@ -355,7 +493,7 @@ def check_ship(board, ship, attack_r, attack_c):
                             counter = counter + 1
                     
             
-                
+
             # After it checks one ship, 
             # If counter is equal to the ships marker number,
             # Remove that ship from the list and return true.   
@@ -367,7 +505,68 @@ def check_ship(board, ship, attack_r, attack_c):
                 
                 return [True, sunk]
             
+            
+
+            
+def ship_location(ship):
+
+    ship_list = []
+    
         
+    # Runs through the ship list.
+    for i in range(len(ship)):
+        
+        # i will select what ship its looking at.
+        # 1 and 2 are the indexes of row and column.
+        row = ship[i][1]
+        col = ship[i][2]
+        
+        direction = ship[i][3]
+        
+        number = ship[i][0]
+    
+        ship_number = []
+
+
+        # When it looks at the first ship, 
+        # iterate over it the number of markers it has.
+        for k in range(number):
+            
+            ship_place = []
+
+            # Check the direction to determine which way it has to look.
+            
+            if direction == "up":
+
+                ship_place.append(row-k)
+                ship_place.append(col)
+
+                            
+            elif direction == "down":
+
+                ship_place.append(row+k)
+                ship_place.append(col)
+                
+            
+                
+            elif direction == "left":
+
+                ship_place.append(row)
+                ship_place.append(col-k)
+                
+                        
+                
+            elif direction == "right":
+
+                ship_place.append(row)
+                ship_place.append(col+k)
+            
+            ship_number.append(ship_place)
+
+        ship_list.append(ship_number)
+
+    return ship_list
+
             
           
             
@@ -468,7 +667,13 @@ while True:
                 
                 player_ship_storage.append(destroyer)
         
-        
+
+
+
+        player_storage = ship_location(player_ship_storage)
+
+
+
         # Displays up to date board with placed ship.   
         display_board(player)
         
@@ -655,7 +860,7 @@ while True:
         print("\n Computer Attack")
         
         # This will attack the player and place markers on their board.
-        comp_move = comp_attack(player)
+        comp_move = comp_attack(player, player_storage)
         
         # This will show the outcome.
         display_board(player)
@@ -684,15 +889,15 @@ while True:
         except TypeError:
             pass
             
-        if player_ships == 5:
-            break
-        
 
         # This will allow the computer to go again,
         # when a ship has been hit.
         while comp_move[3] == False:
+
+            if player_ships == 5:
+                break
             
-            comp_move = comp_attack(player)
+            comp_move = comp_attack(player, player_storage)
             
             display_board(player)
             
@@ -719,8 +924,9 @@ while True:
             except TypeError:
                 pass
         
-            if player_ships == 5:
-                break
+        
+        if player_ships == 5:
+            break
         
         #display_board(player)
         input("Press enter to continue.")
@@ -730,10 +936,10 @@ while True:
 # Once the loop has been exited this will check to see who won.
 # Then print the following.
 if comp_ships == 5:
-    print("Congratulations YOU WON!!!!")
+    print("\nCongratulations YOU WON!!!!")
 
 elif player_ships == 5:
-    print("Sorry YOU LOSE!!!!!")
+    print("\nSorry YOU LOSE!!!!!")
     
 
 print("\nTHANKS FOR PLAYING")
